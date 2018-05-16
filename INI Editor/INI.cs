@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 //C# ini file loader, treats all files as WIN INI type
@@ -26,6 +24,7 @@ namespace INI_Editor
             data = value;
         }
 
+        //tostring override, returns value in same format as would be in file
         new public string ToString()
         {
             string result = dataName + "=" + data;
@@ -51,11 +50,14 @@ namespace INI_Editor
             tree = new List<Data>();
         }
 
+        //tostring override
+        //returns only the name of the tree, DOES NOT return data inside the tree, use TreeToString for that purpose
         new public string ToString()
         {            
             return "[" + treeName + "]";
         }
 
+        //returns the entire tree in the same format as would be in the file
         public string TreeToString()
         {
             string result = "";
@@ -71,7 +73,7 @@ namespace INI_Editor
         public List<Data> tree;
     }
     
-
+    //primary class that handles all INI data
     public class INI
     {
         private List<Tree> data;
@@ -93,6 +95,7 @@ namespace INI_Editor
         }
 
         //loads a file from given location into internal buffer
+        //self handles file exceptions
         //returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
         public bool Load(string fileLocation, string fileName)
         {
@@ -123,15 +126,17 @@ namespace INI_Editor
                 //prepare to sort the data into our object
                 for (int i = 0; i < data.Count; i++)
                 {
-                    //found a tree
+                    //a tree was found
                     if (data[i].First<char>().Equals('[') && data[i].Last<char>().Equals(']'))
                     {
                         string treeName = data[i];
                         treeName = treeName.Remove(0, 1);
                         treeName = treeName.Remove(treeName.Length - 1, 1);
 
+                        //add a new Tree object to the list
                         AddTree(treeName);
                             
+                        //prepare and add all the Data objects under this tree
                         for (int n = (i + 1); n < data.Count; n++)
                             if (!(data[n].First<char>().Equals('[') && data[n].Last<char>().Equals(']')))
                             {
@@ -140,7 +145,7 @@ namespace INI_Editor
                                 AddValue(treeName, valueName, value);
                             }
                             else
-                                break;
+                                break;//either found a new Tree or reached the end of the file
                     }                    
                 }
             }
@@ -155,8 +160,7 @@ namespace INI_Editor
                 return false;
             }
 
-
-
+            //a file has been loaded, prepare file location data and set a file loaded value for future use
             this.fileLocation = fileLocation;
             this.fileName = fileName;
             fileLoaded = true;
@@ -181,6 +185,7 @@ namespace INI_Editor
         }
 
         //saves to a specified file location
+        //self handles file exceptions
         //returns true if successfully saved returns false if unsucessful, if unsucessful a error will be logged into lastError
         public bool SaveTo(string fileLocation, string fileName)
         {
@@ -378,7 +383,7 @@ namespace INI_Editor
             return result;
         }
 
-        //returns all data in the class as a List
+        //returns all data in the class as a List of type string
         public List<string> ToStringArray()
         {
             List<string> result = new List<string>();
