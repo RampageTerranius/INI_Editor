@@ -313,10 +313,18 @@ namespace INI_Editor
         }
 
         //adds a new tree to the data set
-        //returns void
-        public void AddTree(string treeName)
+        //returns true if tree was added, returns false if tree was not created
+        public bool AddTree(string treeName)
         {
-            data.Add(new Tree(treeName));
+            if (!TreeExists(treeName))
+            {
+                data.Add(new Tree(treeName));
+                return true;
+            }
+
+            lastError = "INI Editor-AddTree: tree [" + treeName + "] already exists"; ;
+
+            return false;
         }
 
         //adds a new value to the given tree, does not create the tree if it does not exist
