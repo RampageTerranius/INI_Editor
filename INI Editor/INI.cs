@@ -177,7 +177,6 @@ namespace INI_Editor
                 lastError = "INI Editor-Save: No file has been loaded. if trying to save a program created ini file please use Saveto()";
                 return false;
             }
-
             
             SaveTo(fileLocation, fileName);
 
@@ -218,7 +217,6 @@ namespace INI_Editor
                 return false;
             }
 
-
             return true;
         }
 
@@ -234,11 +232,9 @@ namespace INI_Editor
 
 
         //wipes the internal buffer of all data, preparing the class for new use again
-        //returns true if succesfully closed, returns false if unsuccessful, if unsucessful a error will be logged into lastError
-        public bool Close()
+        public void Close()
         {
             Clear();
-            return true;
         }
 
         //saves and closes the current INI, uses Save() and Close() functions to cause this
@@ -246,11 +242,55 @@ namespace INI_Editor
         public bool SaveAndClose()
         {
             if (!Save())            
-                return false;            
-            else if (!Close())            
-                return false;            
-            
+                return false;
+
+            Close();
+
             return true;
+        }
+
+        //checks if the given tree name exists
+        //returns true if tree already exists, returns false if it does not
+        public bool TreeExists(string tree)
+        {
+            for (int i = 0; i < data.Count; i++)
+                if (data[i].treeName == tree)
+                    return true;//tree exists
+
+            //tree does not exist
+            return false;
+        }
+
+        //checks if a given value inside of a tree exists
+        //returns true if it exists, returns false if not
+        public bool ValueExists(string tree, string value)
+        {
+            Tree t = new Tree();
+            t = GetTree(tree);
+
+            if (t != null)
+                for (int i = 0; i < t.tree.Count; i++)
+                    if (t.tree[i].dataName == value)
+                        return true;//value exists
+
+            //value does not exist
+            return false;
+        }
+
+        //returns the data from a given value in a given tree
+        //returns a string, returns blank if failed
+        public string GetValue(string tree, string value)
+        {
+            Tree t = new Tree();
+            t = GetTree(tree);
+
+            if (t != null)
+                for (int i = 0; i < t.tree.Count; i++)
+                    if (t.tree[i].dataName == value)
+                        return t.tree[i].data;//value exists
+
+            //value does not exist
+            return "";
         }
 
         //returns the first instance of any tree with the name given
