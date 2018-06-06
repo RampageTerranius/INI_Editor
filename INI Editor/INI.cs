@@ -15,7 +15,7 @@ namespace INI_Editor
         public Data()
         {
             dataName = "";
-            data = "";
+            data = "";			
         }
 
         public Data(string valueName, string value)
@@ -29,7 +29,7 @@ namespace INI_Editor
         {
             string result = dataName + "=" + data;
             return result;
-        }
+        }		
 
 		//returns a Tuple with both the data name and the data in seperate strings
 		public Tuple<string, string> ToTupleString()
@@ -42,7 +42,7 @@ namespace INI_Editor
     }
     
     //handles storing the tree its self
-    public class Tree
+    public class Tree : INI
     {
         public Tree()
         {
@@ -100,79 +100,88 @@ namespace INI_Editor
             Clear();
         }
 
-        //loads a file from given location into internal buffer
-        //self handles file exceptions
-        //returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
-        public bool Load(string fileLocation, string fileName)
+		//passes off to the main load function, reques both the location of the file AND the name of the file
+		//returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
+		public bool Load(string argFileLocation, string argFileName)
         {
-            if (fileLoaded)
-            {
-                lastError = "INI Editor-Load: A file is already open, please use Close() or SaveAndClose() first";
-                return false;
-            }
-
-            Clear();
-
-            //load the file
-            try
-            {
-                List<String> data = new List<string>();
-                StreamReader sr = new StreamReader(fileLocation + "\\" + fileName);
-
-                //load the file into local memory
-                while (!sr.EndOfStream)
-                {
-                    string s = sr.ReadLine();
-                    if (s != "")
-                        data.Add(s);
-                }
-
-                sr.Close();
-
-                //prepare to sort the data into our object
-                for (int i = 0; i < data.Count; i++)
-                {
-                    //a tree was found
-                    if (data[i].First<char>().Equals('[') && data[i].Last<char>().Equals(']'))
-                    {
-                        string treeName = data[i];
-                        treeName = treeName.Remove(0, 1);
-                        treeName = treeName.Remove(treeName.Length - 1, 1);
-
-                        //add a new Tree object to the list
-                        AddTree(treeName);
-
-                        //prepare and add all the Data objects under this tree
-                        for (int n = (i + 1); n < data.Count; n++)
-                            if (!(data[n].First<char>().Equals('[') && data[n].Last<char>().Equals(']')))
-                            {
-                                string valueName = data[n].Remove(data[n].IndexOf('='), data[n].Length - data[n].IndexOf('='));
-                                string value = data[n].Remove(0, (data[n].IndexOf('=') + 1));
-                                AddValue(treeName, valueName, value);
-                            }
-                            else
-                                break;//either found a new Tree or reached the end of the file
-                    }
-                }
-            }
-            catch (FileNotFoundException e)
-            {
-                lastError = "INI Editor-Load: File was not found '" + fileLocation + "\\" + fileName + "'";
-                return false;
-            }
-            catch (Exception e)
-            {
-                lastError = "INI Editor-Load: Unhandled Exception";
-                return false;
-            }
-
-            //a file has been loaded, prepare file location data and set a file loaded value for future use
-            this.fileLocation = fileLocation;
-            this.fileName = fileName;
-            fileLoaded = true;
-
-            return true;
+			bool result = load(argFileLocation + "\\" + argFileName);
+			fileName = argFileName;
+			return result;
         }
+
+		//loads a file from given location into internal buffer
+		//self handles file exceptions
+		//returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
+		public bool load(string argFileLocation)
+		{
+
+			if (fileLoaded)
+			{
+				lastError = "INI Editor-Load: A file is already open, please use Close() or SaveAndClose() first";
+				return false;
+			}
+
+			Clear();
+
+			//load the file
+			try
+			{
+				List<String> data = new List<string>();
+				StreamReader sr = new StreamReader(argFileLocation);
+
+				//load the file into local memory
+				while (!sr.EndOfStream)
+				{
+					string s = sr.ReadLine();
+					if (s != "")
+						data.Add(s);
+				}
+
+				sr.Close();
+
+				//prepare to sort the data into our object
+				for (int i = 0; i < data.Count; i++)
+				{
+					//a tree was found
+					if (data[i].First<char>().Equals('[') && data[i].Last<char>().Equals(']'))
+					{
+						string treeName = data[i];
+						treeName = treeName.Remove(0, 1);
+						treeName = treeName.Remove(treeName.Length - 1, 1);
+
+						//add a new Tree object to the list
+						AddTree(treeName);
+
+						//prepare and add all the Data objects under this tree
+						for (int n = (i + 1); n < data.Count; n++)
+							if (!(data[n].First<char>().Equals('[') && data[n].Last<char>().Equals(']')))
+							{
+								string valueName = data[n].Remove(data[n].IndexOf('='), data[n].Length - data[n].IndexOf('='));
+								string value = data[n].Remove(0, (data[n].IndexOf('=') + 1));
+								AddValue(treeName, valueName, value);
+							}
+							else
+								break;//either found a new Tree or reached the end of the file
+					}
+				}
+			}
+			catch (FileNotFoundException e)
+			{
+				lastError = "INI Editor-Load: File was not found '" + fileLocation + "\\" + fileName + "'";
+				return false;
+			}
+			catch (Exception e)
+			{
+				lastError = "INI Editor-Load: Unhandled Exception";
+				return false;
+			}
+
+			//a file has been loaded, prepare file location data and set a file loaded value for future use
+			this.fileLocation = argFileLocation;
+			fileLoaded = true;
+
+			return true;
+		}
 
         //saves to the same location as was originally opened
         //returns true if successfully saved returns false if unsucessful, if unsucessful a error will be logged into lastError
