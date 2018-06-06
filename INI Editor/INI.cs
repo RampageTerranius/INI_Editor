@@ -8,8 +8,8 @@ using System.IO;
 //Created By Tyler Brown
 
 namespace INI_Editor
-{
-    //handles internal data for trees
+{ 
+	//handles internal data for trees
     public class Data
     {
         public Data()
@@ -30,6 +30,12 @@ namespace INI_Editor
             string result = dataName + "=" + data;
             return result;
         }
+
+		//returns a Tuple with both the data name and the data in seperate strings
+		public Tuple<string, string> ToTupleString()
+		{
+			return Tuple.Create(dataName, data);
+		}
 
         public string dataName;
         public string data;
@@ -72,7 +78,7 @@ namespace INI_Editor
         public string treeName;
         public List<Data> tree;
     }
-    
+
     //primary class that handles all INI data
     public class INI
     {
@@ -110,7 +116,7 @@ namespace INI_Editor
             //load the file
             try
             {
-                List<String> data = new List<string>();            
+                List<String> data = new List<string>();
                 StreamReader sr = new StreamReader(fileLocation + "\\" + fileName);
 
                 //load the file into local memory
@@ -122,7 +128,7 @@ namespace INI_Editor
                 }
 
                 sr.Close();
-                
+
                 //prepare to sort the data into our object
                 for (int i = 0; i < data.Count; i++)
                 {
@@ -135,7 +141,7 @@ namespace INI_Editor
 
                         //add a new Tree object to the list
                         AddTree(treeName);
-                            
+
                         //prepare and add all the Data objects under this tree
                         for (int n = (i + 1); n < data.Count; n++)
                             if (!(data[n].First<char>().Equals('[') && data[n].Last<char>().Equals(']')))
@@ -146,7 +152,7 @@ namespace INI_Editor
                             }
                             else
                                 break;//either found a new Tree or reached the end of the file
-                    }                    
+                    }
                 }
             }
             catch (FileNotFoundException e)
@@ -164,7 +170,7 @@ namespace INI_Editor
             this.fileLocation = fileLocation;
             this.fileName = fileName;
             fileLoaded = true;
-            
+
             return true;
         }
 
@@ -177,7 +183,7 @@ namespace INI_Editor
                 lastError = "INI Editor-Save: No file has been loaded. if trying to save a program created ini file please use Saveto()";
                 return false;
             }
-            
+
             SaveTo(fileLocation, fileName);
 
             return true;
@@ -241,7 +247,7 @@ namespace INI_Editor
         //returns true if Save() and Close() are successful, returns false if either failed. if either failed a error will be logged into lastError by their respective functions
         public bool SaveAndClose()
         {
-            if (!Save())            
+            if (!Save())
                 return false;
 
             Close();
@@ -331,12 +337,12 @@ namespace INI_Editor
         //returns true if value was added, returns false otherwise. if unsuccessful a error will be logged into lastError
         public bool AddValue(string treeName, string valueName, string value)
         {
-            for (int i = 0; i < data.Count; i++)            
+            for (int i = 0; i < data.Count; i++)
                 if (data[i].treeName == treeName)
                 {
                     data[i].tree.Add(new Data(valueName, value));
                     return true;
-                }            
+                }
 
             lastError = "INI Editor-AddValue: Tree [" + treeName + "] not found";
             return false;
@@ -346,12 +352,12 @@ namespace INI_Editor
         //returns true if sucessful, returns false if not. if unsuccessful a error will be logged into lastError
         public bool EditTree(string treeName, string newName)
         {
-            for (int i = 0; i < data.Count; i++)            
+            for (int i = 0; i < data.Count; i++)
                 if (data[i].treeName == treeName)
                 {
                     data[i].treeName = newName;
                     return true;
-                }            
+                }
 
             lastError = "INI Editor-EditTree: Tree [" + treeName + "] not found";
             return false;
@@ -361,13 +367,13 @@ namespace INI_Editor
         //returns true if sucessful, returns false if not. if unsuccessful a error will be logged into lastError
         public bool EditTree(string treeName, string newName, List<Data> tree)
         {
-            for (int i = 0; i < data.Count; i++)            
+            for (int i = 0; i < data.Count; i++)
                 if (data[i].treeName == treeName)
                 {
                     data[i].treeName = newName;
                     data[i].tree = tree;
                     return true;
-                }            
+                }
 
             lastError = "INI Editor-EditTree: Tree [" + treeName + "] not found";
             return false;
@@ -378,14 +384,29 @@ namespace INI_Editor
         public bool EditValue(string treeName, string valueName, string newValue)
         {
             for (int i = 0; i < data.Count; i++)
-                for (int n = 0; n < data[i].tree.Count; n++)                
-                    if (data[i].tree[n].dataName == valueName)
+            {
+                if (data[i].treeName == treeName)
+                {
+                    for (int n = 0; n < data[i].tree.Count; n++)
                     {
-                        data[i].tree[n].data = newValue;
-                        return true;
-                    }
+                        if (data[i].tree[n].dataName == valueName)
+                        {
+                            data[i].tree[n].data = newValue;
+                            return true;
+                        }
+                            else if (n == data[i].tree.Count - 1)
+                        {
+                            lastError = "INI Editor-EditValue: value '" + valueName + "' not found";
+                            return false;
+                        }
 
-            lastError = "INI Editor-EditValue: value " + treeName + "= not found";
+
+                    }
+                }
+                else if (i == data.Count - 1)                
+                    lastError = "INI Editor-EditValue: tree '" + valueName + "' not found";
+            }
+
             return false;
         }
 
