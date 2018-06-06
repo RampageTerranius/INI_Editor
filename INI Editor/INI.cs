@@ -207,12 +207,6 @@ namespace INI_Editor
         //returns true if successfully saved returns false if unsucessful, if unsucessful a error will be logged into lastError
         public bool SaveTo(string argFileLocation)
         {
-            if (!Directory.Exists(argFileLocation))
-            {
-                lastError = "INI Editor-SaveTo: Directoy does not exist '" + argFileLocation + "'";
-                return false;
-            }
-
             try
             {
                 StreamWriter sw = new StreamWriter(argFileLocation);
@@ -230,6 +224,11 @@ namespace INI_Editor
                 lastError = "INI Editor-SaveTo: File save exception '" + argFileLocation + "'";
                 return false;
             }
+			catch (DirectoryNotFoundException e)
+			{
+				lastError = "INI Editor-SaveTo: Given directory does not exist! '" + argFileLocation + "'";
+				return false;
+			}
             catch (Exception e)
             {
                 lastError = "INI Editor-SaveTo: Unhandled exception";
