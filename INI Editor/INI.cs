@@ -85,7 +85,6 @@ namespace INI_Editor
         private List<Tree> data;
 
         private string fileLocation;
-        private string fileName;
 
         private string lastError;
 
@@ -104,9 +103,7 @@ namespace INI_Editor
 		//returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
 		public bool Load(string argFileLocation, string argFileName)
         {
-			bool result = Load(argFileLocation + "\\" + argFileName);
-			fileName = argFileName;
-			return result;
+			return Load(argFileLocation + "\\" + argFileName); ;
         }
 
 		//loads a file from given location into internal buffer
@@ -167,7 +164,7 @@ namespace INI_Editor
 			}
 			catch (FileNotFoundException e)
 			{
-				lastError = "INI Editor-Load: File was not found '" + fileLocation + "\\" + fileName + "'";
+				lastError = "INI Editor-Load: File was not found '" + fileLocation + "'";
 				return false;
 			}
 			catch (Exception e)
@@ -193,25 +190,32 @@ namespace INI_Editor
                 return false;
             }
 
-            SaveTo(fileLocation, fileName);
+            SaveTo(fileLocation);
 
             return true;
         }
 
+		//passes off to the main SaveTo function - Requires both the file location AND the file name
+		//returns true if successfully saved returns false if unsucessful, if unsucessful a error will be logged into lastError
+		public bool SaveTo(string argFileLocation, string argFileName)
+		{
+			return SaveTo(argFileLocation + "\\" + argFileName);
+		}
+
         //saves to a specified file location
         //self handles file exceptions
         //returns true if successfully saved returns false if unsucessful, if unsucessful a error will be logged into lastError
-        public bool SaveTo(string fileLocation, string fileName)
+        public bool SaveTo(string argFileLocation)
         {
-            if (!Directory.Exists(fileLocation))
+            if (!Directory.Exists(argFileLocation))
             {
-                lastError = "INI Editor-SaveTo: Directoy does not exist '" + fileLocation + "'";
+                lastError = "INI Editor-SaveTo: Directoy does not exist '" + argFileLocation + "'";
                 return false;
             }
 
             try
             {
-                StreamWriter sw = new StreamWriter(fileLocation + "\\" + fileName);
+                StreamWriter sw = new StreamWriter(argFileLocation);
 
                 List<string> data = ToStringArray();
 
@@ -223,7 +227,7 @@ namespace INI_Editor
             }
             catch (FileLoadException e)
             {
-                lastError = "INI Editor-SaveTo: File save exception '" + fileLocation + "\\" + fileName + "'";
+                lastError = "INI Editor-SaveTo: File save exception '" + argFileLocation + "'";
                 return false;
             }
             catch (Exception e)
