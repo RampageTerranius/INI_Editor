@@ -104,7 +104,7 @@ namespace INI_Editor
 		//returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
 		public bool Load(string argFileLocation, string argFileName)
         {
-			bool result = load(argFileLocation + "\\" + argFileName);
+			bool result = Load(argFileLocation + "\\" + argFileName);
 			fileName = argFileName;
 			return result;
         }
@@ -112,7 +112,7 @@ namespace INI_Editor
 		//loads a file from given location into internal buffer
 		//self handles file exceptions
 		//returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
-		public bool load(string argFileLocation)
+		public bool Load(string argFileLocation)
 		{
 
 			if (fileLoaded)
