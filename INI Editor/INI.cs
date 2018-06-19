@@ -361,7 +361,7 @@ namespace INI_Editor
         }
 
         //edits the given trees name
-        //returns true if sucessful, returns false if not. if unsuccessful a error will be logged into lastError
+        //returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
         public bool EditTree(string treeName, string newName)
         {
             for (int i = 0; i < data.Count; i++)
@@ -376,7 +376,7 @@ namespace INI_Editor
         }
 
         //edits the given trees name and gives it a new set of internal data
-        //returns true if sucessful, returns false if not. if unsuccessful a error will be logged into lastError
+        //returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
         public bool EditTree(string treeName, string newName, List<Data> tree)
         {
             for (int i = 0; i < data.Count; i++)
@@ -392,7 +392,7 @@ namespace INI_Editor
         }
 
         //edits the given value in the given tree
-        //returns true if sucessful, returns false if not. if unsuccessful a error will be logged into lastError
+        //returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
         public bool EditValue(string treeName, string valueName, string newValue)
         {
             for (int i = 0; i < data.Count; i++)
@@ -411,8 +411,6 @@ namespace INI_Editor
                             lastError = "INI Editor-EditValue: value '" + valueName + "' not found";
                             return false;
                         }
-
-
                     }
                 }
                 else if (i == data.Count - 1)                
@@ -423,7 +421,7 @@ namespace INI_Editor
         }
 
         //edits the given value in the given tree and also renames the value
-        //returns true if sucessful, returns false if not. if unsuccessful a error will be logged into lastError
+        //returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
         public bool EditValue(string treeName, string valueName, string newValueName, string newValue)
         {
             for (int i = 0; i < data.Count; i++)
@@ -449,7 +447,7 @@ namespace INI_Editor
         }
 
         //overridden ToString function
-        //returns all data in the class as a single string
+        //returns all data in the class as a single string, uses a new line for each value in data
         override public string ToString()
         {
             string result = "";
