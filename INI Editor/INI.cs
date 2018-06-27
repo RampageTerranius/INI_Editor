@@ -94,10 +94,26 @@ namespace INI_Editor
 
 
         //default constructor
+		//prepares a default INI
         public INI()
         {
             Clear();
         }
+
+		//load constructor
+		//loads a given file into memory at constr
+		public INI(string argFileLocation)
+		{
+			Clear();
+			Load(argFileLocation);
+		}
+
+		//laod constructors same as above
+		public INI(string argFileLocation, string argFileName)
+		{
+			Clear();
+			Load(argFileLocation + "\\" + argFileName);
+		}
 
 		//passes off to the main load function, reques both the location of the file AND the name of the file
 		//returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
