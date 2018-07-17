@@ -12,7 +12,10 @@ namespace INI_Editor
 	//handles internal data for trees
     public class Data
     {
-        public Data()
+		public string dataName;
+		public string data;
+
+		public Data()
         {
             dataName = "";
             data = "";			
@@ -36,15 +39,15 @@ namespace INI_Editor
 		{
 			return Tuple.Create(dataName, data);
 		}
-
-        public string dataName;
-        public string data;
     }
     
     //handles storing the tree its self
     public class Tree : INI
     {
-        public Tree()
+		public string treeName;
+		public List<Data> tree;
+
+		public Tree()
         {
             treeName = "";
             tree = new List<Data>();
@@ -74,9 +77,6 @@ namespace INI_Editor
 
             return result;
         }
-
-        public string treeName;
-        public List<Data> tree;
     }
 
     //primary class that handles all INI data
@@ -178,12 +178,12 @@ namespace INI_Editor
 					}
 				}
 			}
-			catch (FileNotFoundException e)
+			catch (FileNotFoundException)
 			{
 				lastError = "INI Editor-Load: File was not found '" + fileLocation + "'";
 				return false;
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				lastError = "INI Editor-Load: Unhandled Exception";
 				return false;
@@ -235,17 +235,17 @@ namespace INI_Editor
                 sw.Flush();
                 sw.Close();
             }
-            catch (FileLoadException e)
+            catch (FileLoadException)
             {
                 lastError = "INI Editor-SaveTo: File save exception '" + argFileLocation + "'";
                 return false;
             }
-			catch (DirectoryNotFoundException e)
+			catch (DirectoryNotFoundException)
 			{
 				lastError = "INI Editor-SaveTo: Given directory does not exist! '" + argFileLocation + "'";
 				return false;
 			}
-            catch (Exception e)
+            catch (Exception)
             {
                 lastError = "INI Editor-SaveTo: Unhandled exception";
                 return false;
