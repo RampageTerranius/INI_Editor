@@ -407,9 +407,24 @@ namespace INI_Editor
             return false;
         }
 
-        //edits the given value in the given tree
-        //returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
-        public bool EditValue(string treeName, string valueName, string newValue)
+		//edits the given tree giving it a new set of internal data
+		//returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
+		public bool EditTree(string treeName, List<Data> tree)
+		{
+			for (int i = 0; i < data.Count; i++)
+				if (data[i].treeName == treeName)
+				{					
+					data[i].tree = tree;
+					return true;
+				}
+
+			lastError = "INI Editor-EditTree: Tree [" + treeName + "] not found";
+			return false;
+		}
+
+		//edits the given value in the given tree
+		//returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
+		public bool EditValue(string treeName, string valueName, string newValue)
         {
             for (int i = 0; i < data.Count; i++)
             {
