@@ -115,6 +115,28 @@ namespace INI_Editor
 			Load(argFileLocation + "\\" + argFileName);
 		}
 
+		//determines if the program has a console application running that it can log errors to
+		//returns > 1 (true) if it is able to detect a console window, catches error and returns false if unable to detect a consoel window
+		private bool ConsoleDetected()
+		{
+			try
+			{
+				return Console.WindowHeight > 0;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		//logs the given error into lastError
+		private void LogError(string error)
+		{
+			lastError = error;
+			if (ConsoleDetected())
+				Console.WriteLine(lastError);
+		}
+
 		//passes off to the main load function, reques both the location of the file AND the name of the file
 		//returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
 		public bool Load(string argFileLocation, string argFileName)
@@ -130,7 +152,7 @@ namespace INI_Editor
 
 			if (fileLoaded)
 			{
-				lastError = "INI Editor-Load: A file is already open, please use Close() or SaveAndClose() first";
+				LogError("INI Editor-Load: A file is already open, please use Close() or SaveAndClose() first");
 				return false;
 			}
 
@@ -139,6 +161,12 @@ namespace INI_Editor
 			//load the file
 			try
 			{
+				if (!File.Exists(argFileLocation))
+				{
+					LogError("INI Editor - Load: File does not exist at '" + argFileLocation + "'");
+					return false;
+				}
+
 				List<String> data = new List<string>();
 				StreamReader sr = new StreamReader(argFileLocation);
 
@@ -156,6 +184,7 @@ namespace INI_Editor
 				for (int i = 0; i < data.Count; i++)
 				{
 					//a tree was found
+
 					if (data[i].First<char>().Equals('[') && data[i].Last<char>().Equals(']'))
 					{
 						string treeName = data[i];
@@ -180,12 +209,12 @@ namespace INI_Editor
 			}
 			catch (FileNotFoundException)
 			{
-				lastError = "INI Editor-Load: File was not found '" + fileLocation + "'";
+				LogError("INI Editor-Load: File was not found '" + fileLocation + "'");
 				return false;
 			}
 			catch (Exception)
 			{
-				lastError = "INI Editor-Load: Unhandled Exception";
+				LogError("INI Editor-Load: Unhandled Exception");
 				return false;
 			}
 
@@ -202,7 +231,7 @@ namespace INI_Editor
         {
             if (!fileLoaded)
             {
-                lastError = "INI Editor-Save: No file has been loaded. if trying to save a program created ini file please use Saveto()";
+				LogError("INI Editor-Save: No file has been loaded. if trying to save a program created ini file please use Saveto()");
                 return false;
             }
 
@@ -237,17 +266,17 @@ namespace INI_Editor
             }
             catch (FileLoadException)
             {
-                lastError = "INI Editor-SaveTo: File save exception '" + argFileLocation + "'";
+				LogError("INI Editor-SaveTo: File save exception '" + argFileLocation + "'");
                 return false;
             }
 			catch (DirectoryNotFoundException)
 			{
-				lastError = "INI Editor-SaveTo: Given directory does not exist! '" + argFileLocation + "'";
+				LogError("INI Editor-SaveTo: Given directory does not exist! '" + argFileLocation + "'");
 				return false;
 			}
             catch (Exception)
             {
-                lastError = "INI Editor-SaveTo: Unhandled exception";
+				LogError("INI Editor-SaveTo: Unhandled exception");
                 return false;
             }
 
@@ -335,7 +364,7 @@ namespace INI_Editor
                 if (data[i].treeName == tree)
                     return data.ElementAt(i);
 
-            lastError = "INI Editor-GetTree: tree [" + tree + "] not found";
+			LogError("INI Editor-GetTree: tree [" + tree + "] not found");
             return null;
         }
 
@@ -356,7 +385,7 @@ namespace INI_Editor
                 return true;
             }
 
-            lastError = "INI Editor-AddTree: tree [" + treeName + "] already exists"; ;
+			LogError("INI Editor-AddTree: tree [" + treeName + "] already exists");
 
             return false;
         }
@@ -372,7 +401,7 @@ namespace INI_Editor
                     return true;
                 }
 
-            lastError = "INI Editor-AddValue: Tree [" + treeName + "] not found";
+			LogError("INI Editor-AddValue: Tree [" + treeName + "] not found");
             return false;
         }
 
@@ -387,7 +416,7 @@ namespace INI_Editor
                     return true;
                 }
 
-            lastError = "INI Editor-EditTree: Tree [" + treeName + "] not found";
+			LogError("INI Editor-EditTree: Tree [" + treeName + "] not found");
             return false;
         }
 
@@ -403,7 +432,7 @@ namespace INI_Editor
                     return true;
                 }
 
-            lastError = "INI Editor-EditTree: Tree [" + treeName + "] not found";
+			LogError("INI Editor-EditTree: Tree [" + treeName + "] not found");
             return false;
         }
 
@@ -418,7 +447,7 @@ namespace INI_Editor
 					return true;
 				}
 
-			lastError = "INI Editor-EditTree: Tree [" + treeName + "] not found";
+			LogError("INI Editor-EditTree: Tree [" + treeName + "] not found");
 			return false;
 		}
 
@@ -439,13 +468,13 @@ namespace INI_Editor
                         }
                             else if (n == data[i].tree.Count - 1)
                         {
-                            lastError = "INI Editor-EditValue: value '" + valueName + "' not found";
+							LogError("INI Editor-EditValue: value '" + valueName + "' not found");
                             return false;
                         }
                     }
                 }
-                else if (i == data.Count - 1)                
-                    lastError = "INI Editor-EditValue: tree '" + valueName + "' not found";
+                else if (i == data.Count - 1)
+					LogError("INI Editor-EditValue: tree '" + valueName + "' not found");
             }
 
             return false;
@@ -464,7 +493,7 @@ namespace INI_Editor
                         return true;
                     }
 
-            lastError = "INI Editor-EditValue: value " + treeName + "= not found";
+			LogError("INI Editor-EditValue: value " + treeName + "= not found");
             return false;
         }
 
@@ -472,9 +501,9 @@ namespace INI_Editor
         //returns the last known error, returns a blank string if no error text currently in buffer. clears error after returning
         public string GetLastError()
         {
-            string result = lastError;
-            lastError = "";
-            return result;
+			string result = lastError;
+			lastError = "";
+			return result;
         }
 
         //overridden ToString function
