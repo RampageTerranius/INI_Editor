@@ -7,6 +7,25 @@ using System.IO;
 //DOES NOT handle multiple trees or values of same name!!!!!
 //Created By Tyler Brown
 
+/* 
+	This program is free software: you can redistribute it and/or modify
+
+	it under the terms of the GNU General Public License as published by
+
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.If not, see<https://www.gnu.org/licenses/>.
+*/
+
 namespace INI_Editor
 { 
 	//handles internal data for trees
@@ -108,7 +127,7 @@ namespace INI_Editor
 			Load(argFileLocation);
 		}
 
-		//laod constructors same as above
+		//load constructors same as above
 		public INI(string argFileLocation, string argFileName)
 		{
 			Clear();
@@ -116,7 +135,7 @@ namespace INI_Editor
 		}
 
 		//determines if the program has a console application running that it can log errors to
-		//returns > 1 (true) if it is able to detect a console window, catches error and returns false if unable to detect a consoel window
+		//returns > 1 (true) if it is able to detect a console window, catches error and returns false if unable to detect a console window
 		private bool ConsoleDetected()
 		{
 			try
@@ -161,6 +180,7 @@ namespace INI_Editor
 			//load the file
 			try
 			{
+				//filenotfoundexceptino soemtiems not catching non existant files, this will be used as a backup
 				if (!File.Exists(argFileLocation))
 				{
 					LogError("INI Editor - Load: File does not exist at '" + argFileLocation + "'");
