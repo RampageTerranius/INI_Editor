@@ -111,6 +111,11 @@ namespace INI_Editor
         public bool FileLoaded
         { get { return fileLoaded; } }
 
+		private bool logErrorsToConsole;
+		public bool LogErrorsToConsole
+		{ get { return logErrorsToConsole; } set { logErrorsToConsole = value; } }
+
+
 
         //default constructor
 		//prepares a default INI
@@ -152,8 +157,9 @@ namespace INI_Editor
 		private void LogError(string error)
 		{
 			lastError = error;
-			if (ConsoleDetected())
-				Console.WriteLine(lastError);
+			if (LogErrorsToConsole)
+				if (ConsoleDetected())
+					Console.WriteLine(lastError);
 		}
 
 		//passes off to the main load function, reques both the location of the file AND the name of the file
@@ -180,7 +186,7 @@ namespace INI_Editor
 			//load the file
 			try
 			{
-				//filenotfoundexceptino soemtiems not catching non existant files, this will be used as a backup
+				//FileNotFoundException soemtimes not catching non existant files, this will be used as a backup
 				if (!File.Exists(argFileLocation))
 				{
 					LogError("INI Editor - Load: File does not exist at '" + argFileLocation + "'");
@@ -311,6 +317,7 @@ namespace INI_Editor
             fileLocation = "";
             lastError = "";
             fileLoaded = false;
+			logErrorsToConsole = true;
         }
 
 
