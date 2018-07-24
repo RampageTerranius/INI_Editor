@@ -61,7 +61,7 @@ namespace INI_Editor
     }
     
     //handles storing the tree its self
-    public class Tree : INI
+    public class Tree
     {
 		public string treeName;
 		public List<Data> tree;
