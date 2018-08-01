@@ -139,13 +139,6 @@ namespace INI_Editor
 			Load(argFileLocation + "\\" + argFileName);
 		}
 
-		//passes off to the main load function, reques both the location of the file AND the name of the file
-		//returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
-		public bool Load(string argFileLocation, string argFileName)
-        {
-			return Load(argFileLocation + "\\" + argFileName); ;
-        }
-
 		//loads a file from given location into internal buffer
 		//self handles file exceptions
 		//returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
@@ -163,7 +156,7 @@ namespace INI_Editor
 			//load the file
 			try
 			{
-				//FileNotFoundException soemtimes not catching non existant files, this will be used as a backup
+				//FileNotFoundException sometimes not catching non existant files, this will be used as a backup
 				if (!File.Exists(argFileLocation))
 				{
 					LogError("INI Editor - Load: File does not exist at '" + argFileLocation + "'");
@@ -228,9 +221,16 @@ namespace INI_Editor
 			return true;
 		}
 
-        //saves to the same location as was originally opened
-        //returns true if successfully saved returns false if unsucessful, if unsucessful a error will be logged into lastError
-        public bool Save()
+		//passes off to the main load function, reques both the location of the file AND the name of the file
+		//returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
+		public bool Load(string argFileLocation, string argFileName)
+		{
+			return Load(argFileLocation + "\\" + argFileName); ;
+		}
+
+		//saves to the same location as was originally opened
+		//returns true if successfully saved returns false if unsucessful, if unsucessful a error will be logged into lastError
+		public bool Save()
         {
             if (!fileLoaded)
             {
@@ -242,13 +242,6 @@ namespace INI_Editor
 
             return true;
         }
-
-		//passes off to the main SaveTo function - Requires both the file location AND the file name
-		//returns true if successfully saved returns false if unsucessful, if unsucessful a error will be logged into lastError
-		public bool SaveTo(string argFileLocation, string argFileName)
-		{
-			return SaveTo(argFileLocation + "\\" + argFileName);
-		}
 
         //saves to a specified file location
         //self handles file exceptions
@@ -286,9 +279,16 @@ namespace INI_Editor
             return true;
         }
 
-        //saves and closes the current INI, uses Save() and Close() functions to cause this
-        //returns true if Save() and Close() are successful, returns false if either failed. if either failed a error will be logged into lastError by their respective functions
-        public bool SaveAndClose()
+		//passes off to the main SaveTo function - Requires both the file location AND the file name
+		//returns true if successfully saved returns false if unsucessful, if unsucessful a error will be logged into lastError
+		public bool SaveTo(string argFileLocation, string argFileName)
+		{
+			return SaveTo(argFileLocation + "\\" + argFileName);
+		}
+
+		//saves and closes the current INI, uses Save() and Close() functions to cause this
+		//returns true if Save() and Close() are successful, returns false if either failed. if either failed a error will be logged into lastError by their respective functions
+		public bool SaveAndClose()
         {
             if (!Save())
                 return false;
@@ -297,6 +297,18 @@ namespace INI_Editor
 
             return true;
         }
+
+		//checks if the given tree name exists
+		//returns true if tree already exists, returns false if it does not
+		public bool TreeExists(string tree)
+		{
+			for (int i = 0; i < data.Count; i++)
+				if (data[i].treeName == tree)
+					return true;//tree exists
+
+			//tree does not exist
+			return false;
+		}
 
 		//checks if a given value inside of a tree exists
 		//returns true if it exists, returns false if not
@@ -313,18 +325,6 @@ namespace INI_Editor
 			//value does not exist
 			return false;
 		}
-
-		//checks if the given tree name exists
-		//returns true if tree already exists, returns false if it does not
-		public bool TreeExists(string tree)
-        {
-            for (int i = 0; i < data.Count; i++)
-                if (data[i].treeName == tree)
-                    return true;//tree exists
-
-            //tree does not exist
-            return false;
-        }
 
         //returns the data from a given value in a given tree
         //returns a string, returns blank if failed
@@ -343,7 +343,7 @@ namespace INI_Editor
         }
 
         //returns the first instance of any tree with the name given
-        //returns an object of type <Tree>, returns null if tree not found or file not loaded. if unsuccessful a error will be logged into lastError
+        //returns a list of type Tree, returns null if tree not found or file not loaded. if unsuccessful a error will be logged into lastError
         public Tree GetTree(string tree)
         {
             for (int i = 0; i < data.Count; i++)
@@ -376,20 +376,52 @@ namespace INI_Editor
 			return false;
 		}
 
-		//adds a new tree to the data set
-		//returns true if tree was added, returns false if tree was not created
+		//creates a new tree in the data set using given name
+		//returns true if tree was created, returns false if tree was not created
 		public bool AddTree(string treeName)
         {
-            if (!TreeExists(treeName))
-            {
-                data.Add(new Tree(treeName));
-                return true;
-            }
+			if (treeName != "")
+			{
+				if (!TreeExists(treeName))
+				{
+					data.Add(new Tree(treeName));
+					return true;
+				}
+				else
+					LogError("INI Editor-AddTree: tree [" + treeName + "] already exists");
+			}
+			else
+				LogError("INI Editor-AddTree: treename is blank, please give a tree name");
 
-			LogError("INI Editor-AddTree: tree [" + treeName + "] already exists");
-
-            return false;
+			return false;
         }
+
+		//adds the given tree to the data set
+		//returns true if tree was added, returns false if tree was not created
+		public bool AddTree(Tree argTree)
+		{
+			if (argTree != null)
+			{
+				if (argTree.treeName != "")
+				{
+
+					string treeName = argTree.treeName;
+					if (!TreeExists(treeName))
+					{
+						data.Add(argTree);
+						return true;
+					}
+					else 
+						LogError("INI Editor-AddTree: tree [" + treeName + "] already exists");
+				}
+				else
+					LogError("INI Editor-AddTree: treename is blank, please give a tree name");
+			}
+			else
+				LogError("INI Editor-AddTree: argTree is null");
+
+			return false;
+		}
 
 		//edits the given value in the given tree
 		//returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
