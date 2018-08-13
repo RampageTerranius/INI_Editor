@@ -180,7 +180,6 @@ namespace INI_Editor
 				for (int i = 0; i < data.Count; i++)
 				{
 					//a tree was found
-
 					if (data[i].First<char>().Equals('[') && data[i].Last<char>().Equals(']'))
 					{
 						string treeName = data[i];
@@ -342,9 +341,84 @@ namespace INI_Editor
             return "";
         }
 
-        //returns the first instance of any tree with the name given
-        //returns a list of type Tree, returns null if tree not found or file not loaded. if unsuccessful a error will be logged into lastError
-        public Tree GetTree(string tree)
+		//returns true or false depending on the given value in a given tree
+		//returns bool, an error will be logged if the valeu was neither true or false in this situation will default to return false
+		public bool GetValueAsBool(string tree, string value)
+		{
+			Tree t = new Tree();
+			t = GetTree(tree);
+
+			if (t != null)
+				for (int i = 0; i < t.tree.Count; i++)
+					if (t.tree[i].dataName == value)
+						if (t.tree[i].data.ToLower() == "true")
+							return true;
+						else if (t.tree[i].data.ToLower() == "false")
+							return false;
+						else
+						{
+							LogError("INI Editor-GetValueAsBool: Warning! given value '" + tree + "'-'" + value + "' was neither true or false, defaulting return value to false");
+							return false;
+						}
+
+			LogError("INI Editor-GetValueAsBool: Warning! given value '" + tree + "'-'" + value + "' was not found");
+			return false;
+		}
+
+		//returns the given value as a int
+		//returns int, logs an error if uanble to parse string as int
+		public int GetValueAsInt(string tree, string value)
+		{
+			Tree t = new Tree();
+			t = GetTree(tree);
+
+			if (t != null)
+				for (int i = 0; i < t.tree.Count; i++)
+					if (t.tree[i].dataName == value)
+						try
+						{
+							int val = int.Parse(t.tree[i].data);
+							return val;
+						}
+						catch (Exception)
+						{
+							LogError("INI Editor-GetValueAsInt: Warning! given value '" + tree + "'-'" + value + "' : " + t.tree[i].data + " was unable to be parsed as an int, defaulting return value to 0");
+						}
+
+
+			LogError("INI Editor-GetValueAsInt: Warning! given value '"+ tree + "'-'" + value + "' was not found");
+			return 0;
+		}
+
+		//returns the given value as a double
+		//returns double, logs an error if unable to parse string as double
+		public double GetValueAsDouble(string tree, string value)
+		{
+			Tree t = new Tree();
+			t = GetTree(tree);
+
+			if (t != null)
+				for (int i = 0; i < t.tree.Count; i++)
+					if (t.tree[i].dataName == value)
+						try
+						{
+							double val = float.Parse(t.tree[i].data);
+							return val;
+						}
+						catch (Exception)
+						{
+							LogError("INI Editor-GetValueAsDouble: Warning! given value '" + tree + "'-'" + value + "' : " + t.tree[i].data + " was unable to be parsed as an double, defaulting return value to 0.0");
+							return 0.0;
+						}
+
+
+			LogError("INI Editor-GetValueAsDouble: Warning! given value '" + tree + "'-'" + value + "' was not found");
+			return 0;
+		}
+
+		//returns the first instance of any tree with the name given
+		//returns a list of type Tree, returns null if tree not found or file not loaded. if unsuccessful a error will be logged into lastError
+		public Tree GetTree(string tree)
         {
             for (int i = 0; i < data.Count; i++)
                 if (data[i].treeName == tree)
