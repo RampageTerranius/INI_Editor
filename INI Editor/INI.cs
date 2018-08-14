@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-
-//C# ini file loader, treats all files as WIN INI type
+﻿//C# ini file loader, treats all files as WIN INI type
 //DOES NOT handle multiple trees or values of same name!!!!!
 //Created By Tyler Brown
 
@@ -26,78 +21,13 @@ using System.IO;
 	along with this program.If not, see<https://www.gnu.org/licenses/>.
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.IO;
+
 namespace INI_Editor
-{ 
-	//handles internal data for trees
-    public class Data
-    {
-		public string dataName;
-		public string data;
-
-		public Data()
-        {
-            dataName = "";
-            data = "";			
-        }
-
-        public Data(string valueName, string value)
-        {
-            dataName = valueName;
-            data = value;
-        }
-
-        //tostring override, returns value in same format as would be in file
-        new public string ToString()
-        {
-            string result = dataName + "=" + data;
-            return result;
-        }		
-
-		//returns a Tuple with both the data name and the data in seperate strings
-		public Tuple<string, string> ToTupleString()
-		{
-			return Tuple.Create(dataName, data);
-		}
-    }
-    
-    //handles storing the tree its self
-    public class Tree
-    {
-		public string treeName;
-		public List<Data> tree;
-
-		public Tree()
-        {
-            treeName = "";
-            tree = new List<Data>();
-        }
-
-        public Tree(string argTreeName)
-        {
-			treeName = argTreeName;
-            tree = new List<Data>();
-        }
-
-        //tostring override
-        //returns only the name of the tree, DOES NOT return data inside the tree, use TreeToString for that purpose
-        new public string ToString()
-        {            
-            return "[" + treeName + "]";
-        }
-
-        //returns the entire tree in the same format as would be in the file
-        public string TreeToString()
-        {
-            string result = "";
-            result += "[" + treeName + "]\n";
-
-            for (int i = 0; i < tree.Count; i++)
-                result += tree[i].ToString() + "\n";
-
-            return result;
-        }
-    }
-
+{     
     //primary class that handles all INI data
     public class INI
     {
