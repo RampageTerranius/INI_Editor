@@ -460,6 +460,12 @@ namespace INI_Editor
 		//returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
 		public bool EditValue(string treeName, string valueName, string newValueName, string newValue)
 		{
+			if (newValueName == "")
+			{
+				LogError("INI Editor-EditValue: newValueName is blank, can not create a blank value name");
+				return false;
+			}
+
 			for (int i = 0; i < data.Count; i++)
 				for (int n = 0; n < data[i].tree.Count; n++)
 					if (data[i].tree[n].dataName == valueName)
