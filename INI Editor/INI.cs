@@ -72,9 +72,9 @@ namespace INI_Editor
             tree = new List<Data>();
         }
 
-        public Tree(string treeName)
+        public Tree(string argTreeName)
         {
-            this.treeName = treeName;
+			treeName = argTreeName;
             tree = new List<Data>();
         }
 
