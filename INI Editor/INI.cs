@@ -46,7 +46,6 @@ namespace INI_Editor
 		{ get { return logErrorsToConsole; } set { logErrorsToConsole = value; } }
 
 
-
         //default constructor
 		//prepares a default INI
         public INI()
@@ -68,6 +67,7 @@ namespace INI_Editor
 			Clear();
 			Load(argFileLocation + "\\" + argFileName);
 		}
+
 
 		//loads a file from given location into internal buffer
 		//self handles file exceptions
@@ -522,6 +522,60 @@ namespace INI_Editor
 				}
 
 			LogError("INI Editor-EditTree: Tree [" + treeName + "] not found");
+			return false;
+		}
+
+
+		//deletes the given tree from the INI
+		public bool DeleteTree(string treeName)
+		{
+			//checking that the input is not blank
+			if (treeName == "")
+			{
+				LogError("INI Editor-EditTree: treeName was blank");
+				return false;
+			}
+
+			//find and delete the tree
+			for (int i = 0; i < data.Count; i++)
+				if (data[i].treeName == treeName)
+				{
+					data.RemoveAt(i);
+					return true;
+				}
+
+			//tree not found
+			LogError("INI Editor-DeleteTree: Tree [" + treeName + "] not found");
+			return false;
+		}
+
+		//deletes the given value from the given tree, does not delete the tree
+		public bool DeleteValue(string treeName, string value)
+		{
+			//checking that the input is not blank
+			if (value == "")
+			{
+				LogError("INI Editor-EditValue: value was blank");
+				return false;
+			}
+
+			if (treeName == "")
+			{
+				LogError("INI Editor-EditValue: treeName was blank");
+				return false;
+			}
+
+			//find the tree then find the value in the tree
+			for (int i = 0; i < data.Count; i++)
+				for (int n = 0; n < data[i].tree.Count; n++)
+					if (data[i].tree[n].dataName == value)
+					{
+						data[i].tree.RemoveAt(n);
+						return true;
+					}
+
+			//tree not found
+			LogError("INI Editor-EditValue: value " + treeName + "= not found");
 			return false;
 		}
 
