@@ -61,5 +61,19 @@ namespace INI_Editor
 
 			return result;
 		}
+
+		//returns tree as multidimensional array (format is [name, value])
+		public string[,] TreeToStringArray()
+		{
+			string[,] result = new string[tree.Count, 2];
+
+			for (int i = 0; i < result.Length; i++)
+			{
+				result[i, 0] = tree[i].dataName;
+				result[i, 1] = tree[i].data;
+			}
+			
+			return result;
+		}
 	}
 }
