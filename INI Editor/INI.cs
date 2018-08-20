@@ -74,6 +74,11 @@ namespace INI_Editor
 		//returns true if load was sucessful, returns false if unsucessful, if unsucessful a error will be logged into lastError
 		public bool Load(string argFileLocation)
 		{
+			if (argFileLocation == "")
+			{
+				LogError("INI Editor-Load: No file location given");
+				return false;
+			}
 
 			if (fileLoaded)
 			{
@@ -177,8 +182,16 @@ namespace INI_Editor
         //returns true if successfully saved returns false if unsucessful, if unsucessful a error will be logged into lastError
         public bool SaveTo(string argFileLocation)
         {
-            try
-            {
+			//check if location is blank
+			if (argFileLocation == "")
+			{
+				LogError("INI Editor-SaveTo: given file location was blank!");
+				return false;
+			}
+
+			//attempt to save
+			try
+            {		
                 StreamWriter sw = new StreamWriter(argFileLocation);
 
                 List<string> data = ToStringArray();
@@ -188,11 +201,6 @@ namespace INI_Editor
 
                 sw.Flush();
                 sw.Close();
-            }
-            catch (FileLoadException)
-            {
-				LogError("INI Editor-SaveTo: File save exception '" + argFileLocation + "'");
-                return false;
             }
 			catch (DirectoryNotFoundException)
 			{
@@ -231,6 +239,12 @@ namespace INI_Editor
 		//returns true if tree already exists, returns false if it does not
 		public bool TreeExists(string tree)
 		{
+			if (tree == "")
+			{
+				LogError("INI Editor-TreeExists: No given tree name");
+				return false;
+			}
+
 			for (int i = 0; i < data.Count; i++)
 				if (data[i].treeName == tree)
 					return true;//tree exists
@@ -243,6 +257,18 @@ namespace INI_Editor
 		//returns true if it exists, returns false if not
 		public bool ValueExists(string tree, string value)
 		{
+			if (tree == "")
+			{
+				LogError("INI Editor-ValueExists: No given tree name");
+				return false;
+			}
+
+			if (value == "")
+			{
+				LogError("INI Editor-ValueExists: No given value name");
+				return false;
+			}
+
 			Tree t = new Tree();
 			t = GetTree(tree);
 
@@ -259,7 +285,19 @@ namespace INI_Editor
         //returns a string, returns blank if failed
         public string GetValue(string tree, string value)
         {
-            Tree t = new Tree();
+			if (tree == "")
+			{
+				LogError("INI Editor-GetValue: No given tree name");
+				return "";
+			}
+
+			if (value == "")
+			{
+				LogError("INI Editor-GetValue: No given value name");
+				return "";
+			}
+
+			Tree t = new Tree();
             t = GetTree(tree);
 
             if (t != null)
@@ -275,6 +313,18 @@ namespace INI_Editor
 		//returns bool, an error will be logged if the valeu was neither true or false in this situation will default to return false
 		public bool GetValueAsBool(string tree, string value)
 		{
+			if (tree == "")
+			{
+				LogError("INI Editor-GetValueAsBool: No given tree name");
+				return false;
+			}
+
+			if (value == "")
+			{
+				LogError("INI Editor-GetValueAsBool: No given value name");
+				return false;
+			}
+
 			Tree t = new Tree();
 			t = GetTree(tree);
 
@@ -287,11 +337,11 @@ namespace INI_Editor
 							return false;
 						else
 						{
-							LogError("INI Editor-GetValueAsBool: Warning! given value '" + tree + "'-'" + value + "' was neither true or false, defaulting return value to false");
+							LogError("INI Editor-GetValueAsBool: Warning! [" + tree + "]-'" + value + "' was neither true or false, defaulting return value to false");
 							return false;
 						}
 
-			LogError("INI Editor-GetValueAsBool: Warning! given value '" + tree + "'-'" + value + "' was not found");
+			LogError("INI Editor-GetValueAsBool: Warning! [" + tree + "]-'" + value + "' was not found");
 			return false;
 		}
 
@@ -299,6 +349,18 @@ namespace INI_Editor
 		//returns int, logs an error if uanble to parse string as int
 		public int GetValueAsInt(string tree, string value)
 		{
+			if (tree == "")
+			{
+				LogError("INI Editor-GetValueAsInt: No given tree name");
+				return 0;
+			}
+
+			if (value == "")
+			{
+				LogError("INI Editor-GetValueAsInt: No given value name");
+				return 0;
+			}
+
 			Tree t = new Tree();
 			t = GetTree(tree);
 
@@ -312,11 +374,11 @@ namespace INI_Editor
 						}
 						catch (Exception)
 						{
-							LogError("INI Editor-GetValueAsInt: Warning! given value '" + tree + "'-'" + value + "' : " + t.tree[i].data + " was unable to be parsed as an int, defaulting return value to 0");
+							LogError("INI Editor-GetValueAsInt: Warning! [" + tree + "]-'" + value + "=" + t.tree[i].data + " was unable to be parsed as an int, defaulting return value to 0");
 						}
 
 
-			LogError("INI Editor-GetValueAsInt: Warning! given value '"+ tree + "'-'" + value + "' was not found");
+			LogError("INI Editor-GetValueAsInt: Warning! ["+ tree + "]-'" + value + "' was not found");
 			return 0;
 		}
 
@@ -324,6 +386,18 @@ namespace INI_Editor
 		//returns double, logs an error if unable to parse string as double
 		public double GetValueAsDouble(string tree, string value)
 		{
+			if (tree == "")
+			{
+				LogError("INI Editor-GetValueAsDouble: No given tree name ");
+				return 0.0;
+			}
+
+			if (value == "")
+			{
+				LogError("INI Editor-GetValueAsDouble: No given value name");
+				return 0.0;
+			}
+
 			Tree t = new Tree();
 			t = GetTree(tree);
 
@@ -337,12 +411,12 @@ namespace INI_Editor
 						}
 						catch (Exception)
 						{
-							LogError("INI Editor-GetValueAsDouble: Warning! given value '" + tree + "'-'" + value + "' : " + t.tree[i].data + " was unable to be parsed as an double, defaulting return value to 0.0");
+							LogError("INI Editor-GetValueAsDouble: Warning! [" + tree + "]-'" + value + "=" + t.tree[i].data + " was unable to be parsed as an double, defaulting return value to 0.0");
 							return 0.0;
 						}
 
 
-			LogError("INI Editor-GetValueAsDouble: Warning! given value '" + tree + "'-'" + value + "' was not found");
+			LogError("INI Editor-GetValueAsDouble: Warning! [" + tree + "]-'" + value + "' was not found");
 			return 0;
 		}
 
@@ -350,7 +424,13 @@ namespace INI_Editor
 		//returns a list of type Tree, returns null if tree not found or file not loaded. if unsuccessful a error will be logged into lastError
 		public Tree GetTree(string tree)
         {
-            for (int i = 0; i < data.Count; i++)
+			if (tree == "")
+			{
+				LogError("INI Editor-GetTree: No given tree name ");
+				return null;
+			}
+
+			for (int i = 0; i < data.Count; i++)
                 if (data[i].treeName == tree)
                     return data.ElementAt(i);
 
@@ -369,6 +449,19 @@ namespace INI_Editor
 		//returns true if value was added, returns false otherwise. if unsuccessful a error will be logged into lastError
 		public bool AddValue(string treeName, string valueName, string value)
 		{
+			if (treeName == "")
+			{
+				LogError("INI Editor-AddValue: No tree name was given");
+				return false;
+			}
+
+			if (valueName == "")
+			{
+				LogError("INI Editor-AddValue: No value name was given");
+				return false;
+			}
+
+
 			for (int i = 0; i < data.Count; i++)
 				if (data[i].treeName == treeName)
 				{
@@ -429,8 +522,20 @@ namespace INI_Editor
 
 		//edits the given value in the given tree
 		//returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
-		public bool EditValue(string treeName, string valueName, string newValue)
+		public bool EditValue(string treeName, string valueName, string newData)
 		{
+			if (treeName == "")
+			{
+				LogError("INI Editor-EditValue: No tree name was given");
+				return false;
+			}
+
+			if (valueName == "")
+			{
+				LogError("INI Editor-EditValue: No value name was given");
+				return false;
+			}
+
 			for (int i = 0; i < data.Count; i++)
 			{
 				if (data[i].treeName == treeName)
@@ -439,12 +544,12 @@ namespace INI_Editor
 					{
 						if (data[i].tree[n].dataName == valueName)
 						{
-							data[i].tree[n].data = newValue;
+							data[i].tree[n].data = newData;
 							return true;
 						}
 						else if (n == data[i].tree.Count - 1)
 						{
-							LogError("INI Editor-EditValue: value '" + valueName + "' not found");
+							LogError("INI Editor-EditValue: value '" + valueName + "' not found in tree " + treeName);
 							return false;
 						}
 					}
@@ -460,6 +565,18 @@ namespace INI_Editor
 		//returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
 		public bool EditValue(string treeName, string valueName, string newValueName, string newValue)
 		{
+			if (treeName == "")
+			{
+				LogError("INI Editor-EditValue: No tree name was given");
+				return false;
+			}
+
+			if (valueName == "")
+			{
+				LogError("INI Editor-EditValue: No value name was given");
+				return false;
+			}
+
 			if (newValueName == "")
 			{
 				LogError("INI Editor-EditValue: newValueName is blank, can not create a blank value name");
@@ -483,7 +600,19 @@ namespace INI_Editor
 		//returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
 		public bool EditTree(string treeName, string newName)
         {
-            for (int i = 0; i < data.Count; i++)
+			if (treeName == "")
+			{
+				LogError("INI Editor-EditValue: No tree name was given");
+				return false;
+			}
+
+			if (newName == "")
+			{
+				LogError("INI Editor-EditValue: No new tree name was given");
+				return false;
+			}
+
+			for (int i = 0; i < data.Count; i++)
                 if (data[i].treeName == treeName)
                 {
                     data[i].treeName = newName;
@@ -498,7 +627,25 @@ namespace INI_Editor
         //returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
         public bool EditTree(string treeName, string newName, List<Data> tree)
         {
-            for (int i = 0; i < data.Count; i++)
+			if (treeName == "")
+			{
+				LogError("INI Editor-EditTree: No tree name was given");
+				return false;
+			}
+
+			if (newName == "")
+			{
+				LogError("INI Editor-EditTree: No new tree name was given");
+				return false;
+			}
+
+			if (tree == null)
+			{
+				LogError("INI Editor-EditTree: given tree is null, unable to edit tree");
+				return false;
+			}
+
+			for (int i = 0; i < data.Count; i++)
                 if (data[i].treeName == treeName)
                 {
                     data[i].treeName = newName;
@@ -514,6 +661,18 @@ namespace INI_Editor
 		//returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
 		public bool EditTree(string treeName, List<Data> tree)
 		{
+			if (treeName == "")
+			{
+				LogError("INI Editor-EditTree: No tree name was given");
+				return false;
+			}
+
+			if (tree == null)
+			{
+				LogError("INI Editor-EditTree: given tree is null, unable to edit tree");
+				return false;
+			}
+
 			for (int i = 0; i < data.Count; i++)
 				if (data[i].treeName == treeName)
 				{					
@@ -532,7 +691,7 @@ namespace INI_Editor
 			//checking that the input is not blank
 			if (treeName == "")
 			{
-				LogError("INI Editor-EditTree: treeName was blank");
+				LogError("INI Editor-EditTree: no tree name was given");
 				return false;
 			}
 
@@ -555,13 +714,13 @@ namespace INI_Editor
 			//checking that the input is not blank
 			if (value == "")
 			{
-				LogError("INI Editor-EditValue: value was blank");
+				LogError("INI Editor-EditValue: no value name was given");
 				return false;
 			}
 
 			if (treeName == "")
 			{
-				LogError("INI Editor-EditValue: treeName was blank");
+				LogError("INI Editor-EditValue: no tree name was given");
 				return false;
 			}
 
@@ -575,7 +734,7 @@ namespace INI_Editor
 					}
 
 			//tree not found
-			LogError("INI Editor-EditValue: value " + treeName + "= not found");
+			LogError("INI Editor-DeleteValue: tree [" + treeName + "] not found");
 			return false;
 		}
 
