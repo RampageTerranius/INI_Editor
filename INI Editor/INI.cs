@@ -518,7 +518,7 @@ namespace INI_Editor
 				LogError("INI Editor-AddTree: argTree is null");
 
 			return false;
-		}
+		}		
 
 		//edits the given value in the given tree
 		//returns true if successful, returns false if not. if unsuccessful a error will be logged into lastError
@@ -594,6 +594,63 @@ namespace INI_Editor
 
 			LogError("INI Editor-EditValue: value " + treeName + "= not found");
 			return false;
+		}
+
+		//overloads for EditValue handling variables otehr then string
+		public bool EditValue(string treeName, string valueName, int newData)
+		{
+			string str = "";
+			str = newData.ToString();
+			return EditValue(treeName, valueName, str);
+		}
+
+		public bool EditValue(string treeName, string valueName, float newData)
+		{
+			string str = "";
+			str = newData.ToString();
+			return EditValue(treeName, valueName, str);
+		}
+
+		public bool EditValue(string treeName, string valueName, double newData)
+		{
+			string str = "";
+			str = newData.ToString();
+			return EditValue(treeName, valueName, str);
+		}
+
+		public bool EditValue(string treeName, string valueName, bool newData)
+		{
+			string str = "";
+			str = newData.ToString();
+			return EditValue(treeName, valueName, str);
+		}
+
+		public bool EditValue(string treeName, string valueName, string newValueName, int newData)
+		{
+			string str = "";
+			str = newData.ToString();
+			return EditValue(treeName, valueName, newValueName, str);
+		}
+
+		public bool EditValue(string treeName, string valueName, string newValueName, float newData)
+		{
+			string str = "";
+			str = newData.ToString();
+			return EditValue(treeName, valueName, newValueName, str);
+		}
+
+		public bool EditValue(string treeName, string valueName, string newValueName, double newData)
+		{
+			string str = "";
+			str = newData.ToString();
+			return EditValue(treeName, valueName, newValueName, str);
+		}
+
+		public bool EditValue(string treeName, string valueName, string newValueName, bool newData)
+		{
+			string str = "";
+			str = newData.ToString();
+			return EditValue(treeName, valueName, newValueName, str);
 		}
 
 		//edits the given trees name
