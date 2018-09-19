@@ -473,6 +473,26 @@ namespace INI_Editor
 			return false;
 		}
 
+		public bool AddValue(string treeName, string valueName, int value)
+		{
+			return AddValue(treeName, valueName, value.ToString());
+		}
+
+		public bool AddValue(string treeName, string valueName, double value)
+		{
+			return AddValue(treeName, valueName, value.ToString());
+		}
+
+		public bool AddValue(string treeName, string valueName, float value)
+		{
+			return AddValue(treeName, valueName, value.ToString());
+		}
+
+		public bool AddValue(string treeName, string valueName, bool value)
+		{
+			return AddValue(treeName, valueName, value.ToString().ToLower());
+		}
+
 		//creates a new tree in the data set using given name
 		//returns true if tree was created, returns false if tree was not created
 		public bool AddTree(string treeName)
@@ -492,6 +512,8 @@ namespace INI_Editor
 
 			return false;
         }
+
+		//overloads for AddTree handling variables other then string
 
 		//adds the given tree to the data set
 		//returns true if tree was added, returns false if tree was not created
@@ -596,61 +618,45 @@ namespace INI_Editor
 			return false;
 		}
 
-		//overloads for EditValue handling variables otehr then string
+		//overloads for EditValue handling variables other then string
 		public bool EditValue(string treeName, string valueName, int newData)
 		{
-			string str = "";
-			str = newData.ToString();
-			return EditValue(treeName, valueName, str);
+			return EditValue(treeName, valueName, newData.ToString());
 		}
 
 		public bool EditValue(string treeName, string valueName, float newData)
 		{
-			string str = "";
-			str = newData.ToString();
-			return EditValue(treeName, valueName, str);
+			return EditValue(treeName, valueName, newData.ToString());
 		}
 
 		public bool EditValue(string treeName, string valueName, double newData)
 		{
-			string str = "";
-			str = newData.ToString();
-			return EditValue(treeName, valueName, str);
+			return EditValue(treeName, valueName, newData.ToString());
 		}
 
 		public bool EditValue(string treeName, string valueName, bool newData)
 		{
-			string str = "";
-			str = newData.ToString();
-			return EditValue(treeName, valueName, str);
+			return EditValue(treeName, valueName, newData.ToString().ToLower());
 		}
 
 		public bool EditValue(string treeName, string valueName, string newValueName, int newData)
 		{
-			string str = "";
-			str = newData.ToString();
-			return EditValue(treeName, valueName, newValueName, str);
+			return EditValue(treeName, valueName, newValueName, newData.ToString());
 		}
 
 		public bool EditValue(string treeName, string valueName, string newValueName, float newData)
 		{
-			string str = "";
-			str = newData.ToString();
-			return EditValue(treeName, valueName, newValueName, str);
+			return EditValue(treeName, valueName, newValueName, newData.ToString());
 		}
 
 		public bool EditValue(string treeName, string valueName, string newValueName, double newData)
 		{
-			string str = "";
-			str = newData.ToString();
-			return EditValue(treeName, valueName, newValueName, str);
+			return EditValue(treeName, valueName, newValueName, newData.ToString());
 		}
 
 		public bool EditValue(string treeName, string valueName, string newValueName, bool newData)
 		{
-			string str = "";
-			str = newData.ToString();
-			return EditValue(treeName, valueName, newValueName, str);
+			return EditValue(treeName, valueName, newValueName, newData.ToString().ToLower());
 		}
 
 		//edits the given trees name
