@@ -331,9 +331,9 @@ namespace INI_Editor
 			if (t != null)
 				for (int i = 0; i < t.tree.Count; i++)
 					if (t.tree[i].dataName == value)
-						if (t.tree[i].data.ToLower() == "true")
+						if (t.tree[i].data.ToString().ToLower() == "true")
 							return true;
-						else if (t.tree[i].data.ToLower() == "false")
+						else if (t.tree[i].data.ToString().ToLower() == "false")
 							return false;
 						else
 						{
