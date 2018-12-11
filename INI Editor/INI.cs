@@ -771,6 +771,30 @@ namespace INI_Editor
 			return false;
 		}
 
+		//clears all values from the given tree, does not delete the tree itself
+		public bool ClearTree(string treeName)
+		{
+			//checking that the input is not blank
+			if (treeName == "")
+			{
+				LogError("INI Editor-EditTree: no tree name was given");
+				return false;
+			}
+
+			//find and clear the tree
+			for (int i = 0; i < data.Count; i++)
+				if (data[i].treeName == treeName)
+				{
+					data[i].tree = new List<Data>();
+					data[i].treeName = treeName;
+					return true;
+				}
+
+			//tree not found
+			LogError("INI Editor-ClearTree: Tree [" + treeName + "] not found");
+			return false;
+		}
+
 		//deletes the given value from the given tree, does not delete the tree
 		public bool DeleteValue(string treeName, string value)
 		{
