@@ -25,7 +25,7 @@ using System;
 
 namespace INI_Editor
 {
-	//handles internal data for trees
+	// Handles internal data for trees.
 	public class Data
 	{
 		public string dataName;
@@ -43,14 +43,14 @@ namespace INI_Editor
 			data = value;
 		}
 
-		//tostring override, returns value in same format as would be in file
+		// ToString override, returns value in same format as would be in file.
 		new public string ToString()
 		{
 			string result = dataName + "=" + data;
 			return result;
 		}
 
-		//returns a Tuple with both the data name and the data in seperate strings
+		// Returns a Tuple with both the data name and the data in seperate strings.
 		public Tuple<string, string> ToTupleString()
 		{
 			return Tuple.Create(dataName, data);

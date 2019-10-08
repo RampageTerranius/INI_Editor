@@ -25,33 +25,45 @@ using System.Collections.Generic;
 
 namespace INI_Editor
 {
-	//handles storing the tree its self
-	public class Tree
+    /// <summary>
+    /// Handles storing the tree data of an INI file.
+    /// </summary>
+    public class Tree
 	{
 		public string treeName;
 		public List<Data> tree;
 
+        /// <summary>
+        /// Basic constructor, sets the tree name to blank and creates a new list of tree data.
+        /// </summary>
 		public Tree()
 		{
 			treeName = "";
 			tree = new List<Data>();
 		}
 
+        /// <summary>
+        /// Sets the tree name and creates a new list of tree data.
+        /// </summary>
 		public Tree(string argTreeName)
 		{
 			treeName = argTreeName;
 			tree = new List<Data>();
 		}
 
-		//tostring override
-		//returns only the name of the tree, DOES NOT return data inside the tree, use TreeToString for that purpose
-		new public string ToString()
+
+        /// <summary>
+        /// Returns only the name of the tree, DOES NOT return data inside the tree, use TreeToString for that purpose.
+        /// </summary>
+        new public string ToString()
 		{
 			return "[" + treeName + "]";
 		}
-
-		//returns the entire tree in the same format as would be in the file
-		public string TreeToString()
+        
+        /// <summary>
+        /// Returns the entire tree in the same format as would be in the file.
+        /// </summary>
+        public string TreeToString()
 		{
 			string result = "";
 			result += "[" + treeName + "]\n";
@@ -62,8 +74,10 @@ namespace INI_Editor
 			return result;
 		}
 
-		//returns tree as multidimensional array (format is [name, value])
-		public string[,] TreeToStringArray()
+        /// <summary>
+        /// Returns tree as multidimensional array (format is [name, value])
+        /// </summary>
+        public string[,] TreeToStringArray()
 		{
 			string[,] result = new string[tree.Count, 2];
 
