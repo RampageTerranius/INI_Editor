@@ -73,6 +73,47 @@ namespace INI_Editor
 		}
 
         /// <summary>
+        /// Creates a file at the given location and prepares it for editing.
+        /// </summary>
+        public bool Create(string argFileLocation)
+        {
+            if (argFileLocation == "")
+            {
+                LogError("INI Editor-Create: No file location given");
+                return false;
+            }
+
+            if (File.Exists(argFileLocation))
+            {
+                LogError("INI Editor-Create: File already exist's at '" + argFileLocation + "'");
+                return false;
+            }
+            try
+            {
+                // Attempt to create the file and then load it if possible.
+                FileStream str = File.Create(argFileLocation);
+
+                str.Close();
+
+                return Load(argFileLocation);
+            }
+            catch
+            {
+                LogError("INI Editor-Create: Unable to create file at '" + argFileLocation + "'");
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Creates a file at the given locatino and prepares it for editing.
+        /// </summary>
+        public bool Create(string argFileLocation, string argFileName)
+        {
+            return Create(argFileLocation + "\\" + argFileName);
+        }
+
+        /// <summary>
         /// Loads a file from given location into internal buffer.
         /// Self handles file exceptions.
         /// </summary>
@@ -958,7 +999,7 @@ namespace INI_Editor
         /// <summary>
         /// Determines if the program has a console application running that it can log errors to.
         /// </summary>
-        /// <returns>Returns > 1 (true) if it is able to detect a console window, catches error and returns false if unable to detect a console window.</returns>
+        /// <returns>Returns true if it is able to detect a console window, catches error and returns false if unable to detect a console window.</returns>
         private bool ConsoleDetected()
 		{
 			try
