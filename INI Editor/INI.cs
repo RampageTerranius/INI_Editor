@@ -589,7 +589,7 @@ namespace INI_Editor
         /// <returns>Returns true if tree was created, returns false if tree was not created.</returns>
         public bool AddTree(string treeName)
         {
-			if (treeName == string.Empty)
+			if (treeName != string.Empty)
 			{
 				if (!TreeExists(treeName))
 				{
