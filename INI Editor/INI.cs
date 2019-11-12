@@ -325,14 +325,19 @@ namespace INI_Editor
         /// <param name="value"></param>
         /// <returns>Returns true if it exists, returns false if not.</returns>
         public bool ValueExists(string tree, string value)
-		{
-            // Use GetValue to check if data exists.
-            if (GetValue(tree, value) != string.Empty)
-                return true;
+        {
+            // Use a modified version of GetValue where we return true if there a value with this name.
+            Tree t = new Tree();
+            t = GetTree(tree);
 
-			// Value does not exist.
-			return false;
-		}
+            if (t != null)
+                for (int i = 0; i < t.tree.Count; i++)
+                    if (t.tree[i].dataName == value)
+                        return true;//value exists
+
+            // Value does not exist.
+            return false;
+        }
 
         /// <summary>
         /// Returns the data from a given value in a given tree.
