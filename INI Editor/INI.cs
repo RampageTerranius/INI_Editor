@@ -341,8 +341,9 @@ namespace INI_Editor
 
         /// <summary>
         /// Returns the data from a given value in a given tree.
+        /// Only gets the first found instance.
         /// </summary>
-        /// <returns>Returns any fould value as a string, returns empty string if failed.</returns>
+        /// <returns>Returns any found value as a string, returns empty string if failed.</returns>
         public string GetValue(string tree, string value)
         {
             // Make sure we have data to work with.
@@ -368,6 +369,47 @@ namespace INI_Editor
 
             // Value does not exist.
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Returns all data from given values in given trees.
+        /// </summary>
+        /// <returns>Returns all found values in a List of strings, returns empty List if failed.</returns>
+        public List<string> GetAllValues(string tree, string value)
+        {
+            List<string> strArr = new List<string>();
+
+            // Make sure we have data to work with.
+            if (tree == string.Empty)
+            {
+                LogError("INI Editor-GetAllValues: No given tree name");
+                return strArr;
+            }
+
+            if (value == string.Empty)
+            {
+                LogError("INI Editor-GetAllValues: No given value name");
+                return strArr;
+            }
+
+            List<Tree> treeArr = new List<Tree>();
+            treeArr = GetAllTree(tree);
+
+            if (treeArr.Count == 0)
+                for (int i = 0; i < treeArr.Count; i++)
+                {
+                    Tree t = treeArr.ElementAt(i);
+
+                    for (int n = 0; n < t.tree.Count; n++)
+                        if (t.tree[n].dataName == value)
+                            strArr.Add(t.tree[n].data);
+                }
+
+
+            if (strArr.Count == 0)
+                LogError("INI Editor-GetAllValues: No values found");
+            
+            return strArr;
         }
 
         /// <summary>
@@ -493,23 +535,49 @@ namespace INI_Editor
         /// <summary>
         /// returns the first instance of any tree with the name given
         /// </summary>
-        /// <returns>Returns a list of type Tree, returns null if tree not found or file not loaded. if unsuccessful a error will be logged into lastError.</returns>
+        /// <returns>Returns an instance of Tree, returns null if tree not found or file not loaded. if unsuccessful a error will be logged into lastError.</returns>
         public Tree GetTree(string tree)
         {
             // Make sure we have data to work with.
             if (tree == string.Empty)
-			{
-				LogError("INI Editor-GetTree: No given tree name ");
-				return null;
-			}
+            {
+                LogError("INI Editor-GetTree: No given tree name ");
+                return null;
+            }
 
-			for (int i = 0; i < data.Count; i++)
+            for (int i = 0; i < data.Count; i++)
                 if (data[i].treeName == tree)
                     return data.ElementAt(i);
 
             // If tree was not found return nothing.
-			LogError("INI Editor-GetTree: tree [" + tree + "] not found");
+            LogError("INI Editor-GetTree: tree [" + tree + "] not found");
             return null;
+        }
+
+        /// <summary>
+        /// returns all instances of tree that have the given name.
+        /// </summary>
+        /// <returns>Returns a list of type Tree, returns empty List of type tree if no tree's by the name are found. if unsuccessful a error will be logged into lastError.</returns>
+        public List<Tree> GetAllTree(string tree)
+        {
+            List<Tree> treeArr = new List<Tree>();
+
+            // Make sure we have data to work with.
+            if (tree == string.Empty)
+            {
+                LogError("INI Editor-GetAllTree: No given tree name ");
+                return null;
+            }
+
+            for (int i = 0; i < data.Count; i++)
+                if (data[i].treeName == tree)
+                    treeArr.Add(data.ElementAt(i));
+
+            // If no tree's were found with the given name log an error.
+            if (treeArr.Count == 0)
+                LogError("INI Editor-GetAllTree: tree [" + tree + "] not found");
+
+            return treeArr;
         }
 
         /// <summary>
@@ -608,12 +676,8 @@ namespace INI_Editor
 				LogError("INI Editor-AddTree: treename is blank, please give a tree name");
 
 			return false;
-        }
-
-        //overloads for AddTree handling variables other then string
-
-        //
-        //
+        }   
+        
         /// <summary>
         /// Adds the given tree to the data set.
         /// </summary>
